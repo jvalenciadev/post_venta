@@ -1,0 +1,146 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --brand: 24 95% 53%;
+  --brand-dark: 21 90% 48%;
+  --bg-deep: 0 0% 2%;
+}
+
+html {
+  font-family: 'Outfit', sans-serif;
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-[#050505] text-gray-100 antialiased overflow-x-hidden;
+}
+
+/* Custom Selection */
+::selection {
+  @apply bg-orange-500/30 text-white;
+}
+
+/* Premium Scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-white/10 rounded-full hover:bg-orange-500/30 transition-all;
+}
+
+/* Glassmorphism v10 */
+.glass-modern {
+  @apply bg-white/[0.03] backdrop-blur-xl border border-white/[0.08] shadow-[0_8px_32px_0_rgba(0,0,0,0.37)];
+}
+
+.glass-card {
+  @apply bg-gradient-to-br from-white/[0.05] to-transparent backdrop-blur-md border border-white/10 rounded-[2rem];
+}
+
+/* Bento Box Containers */
+.bento-grid {
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-4;
+}
+
+.bento-card {
+  @apply glass-modern p-6 rounded-[2.5rem] transition-all duration-500 hover:scale-[1.02] hover:border-white/20 hover:bg-white/[0.05];
+}
+
+/* Animations Hub */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes mesh {
+  0% { transform: scale(1) translate(0, 0); }
+  33% { transform: scale(1.2) translate(10%, -10%); }
+  66% { transform: scale(0.8) translate(-5%, 15%); }
+  100% { transform: scale(1) translate(0, 0); }
+}
+
+@keyframes float {
+  0% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(5deg); }
+  100% { transform: translateY(0px) rotate(0deg); }
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-v10-in {
+  animation: fade-in-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.bg-mesh-cyber {
+  position: relative;
+  overflow: hidden;
+}
+
+.bg-mesh-cyber::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at center, rgba(249, 115, 22, 0.08) 0%, transparent 50%),
+              radial-gradient(circle at 70% 30%, rgba(249, 115, 22, 0.05) 0%, transparent 40%),
+              radial-gradient(circle at 30% 70%, rgba(0, 0, 0, 1) 0%, transparent 60%);
+  filter: blur(80px);
+  animation: mesh 20s ease-in-out infinite alternate;
+  z-index: -1;
+}
+
+@keyframes printing {
+  0% { transform: translateY(-100%); opacity: 0; }
+  50% { opacity: 1; }
+  100% { transform: translateY(300%); opacity: 0; }
+}
+.animate-printing {
+  animation: printing 2s infinite linear;
+}
+
+/* Input & Buttons Evolution */
+.input-v10 {
+  @apply w-full bg-white/[0.02] border border-white/10 rounded-2xl px-7 py-4 text-white
+    placeholder-gray-700 focus:outline-none focus:ring-4 focus:ring-orange-500/10 
+    focus:border-orange-500/50 transition-all duration-300;
+}
+
+.btn-v10-primary {
+  @apply relative overflow-hidden bg-orange-500 hover:bg-orange-600 text-white font-black 
+    uppercase tracking-widest text-[10px] px-8 py-4 rounded-2xl transition-all duration-300
+    active:scale-95 shadow-[0_0_20px_rgba(249,115,22,0.3)] hover:shadow-[0_0_40px_rgba(249,115,22,0.5)];
+}
+
+.btn-v10-glass {
+  @apply glass-modern hover:bg-white/10 text-white font-bold px-6 py-4 rounded-2xl 
+    transition-all active:scale-95 flex items-center justify-center gap-2;
+}
+
+/* Custom Layout Utilities */
+.safe-top { padding-top: env(safe-area-inset-top); }
+.safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
