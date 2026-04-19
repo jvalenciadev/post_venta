@@ -124,7 +124,7 @@ export default function ReportsClient() {
   return (
     <div className="h-full flex flex-col gap-8 pb-32 animate-v10-in overflow-y-auto pr-4 custom-scrollbar no-scrollbar lg:custom-scrollbar">
       {/* Header section v11.5 - INTEL CENTER */}
-      <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-8 glass-modern p-10 rounded-[3.5rem] border-white/5 relative overflow-hidden shadow-2xl">
+      <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-8 glass-modern p-10 rounded-[3.5rem] border-white/5 relative overflow-hidden shadow-2xl shrink-0">
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-orange-500/[0.03] rounded-full blur-[150px] -translate-y-1/2 translate-x-1/2" />
 
         <div className="relative z-10 flex flex-col md:flex-row md:items-center gap-10">

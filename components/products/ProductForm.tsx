@@ -100,7 +100,7 @@ export default function ProductForm({
         </div>
 
         {/* Dense Form Body */}
-        <form onSubmit={handleSubmit} className="relative z-10 flex-1 overflow-y-auto no-scrollbar p-6 space-y-6">
+        <form id="product-form" onSubmit={handleSubmit} className="relative z-10 flex-1 overflow-y-auto no-scrollbar p-6 space-y-6">
           {/* Image Upload Area - Compact */}
           <div className="space-y-2">
             <label className="text-[8px] font-black text-gray-500 uppercase tracking-widest pl-1">Perfil Visual</label>
@@ -204,7 +204,6 @@ export default function ProductForm({
             {/* Status Toggle */}
             <div className="p-4 bg-white/[0.02] border border-white/5 rounded-2xl flex items-center justify-between">
               <span className="text-[9px] font-black text-gray-500 uppercase tracking-widest">Estado Activo</span>
-              <input type="hidden" name="active" value="false" />
               <label className="relative inline-flex items-center cursor-pointer">
                 <input type="checkbox" name="active" value="true" defaultChecked={product?.active ?? true} className="sr-only peer" />
                 <div className="w-10 h-5 bg-white/5 rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-orange-500 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-gray-700 after:rounded-full after:h-4 after:w-4 after:transition-all" />
@@ -238,7 +237,8 @@ export default function ProductForm({
             Cancelar
           </button>
           <button
-            onClick={() => (document.querySelector('form') as HTMLFormElement)?.requestSubmit()}
+            type="submit"
+            form="product-form"
             disabled={loading}
             className="flex-1 py-4 rounded-xl bg-orange-500 text-white text-[9px] font-black uppercase tracking-widest shadow-xl shadow-orange-500/20 hover:scale-[1.02] transition-all flex items-center justify-center gap-2"
           >
