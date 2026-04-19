@@ -24,6 +24,15 @@ module.exports = {
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
       },
+      keyframes: {
+        scan: {
+          '0%': { transform: 'translateX(-100%)' },
+          '100%': { transform: 'translateX(100%)' },
+        }
+      },
+      animation: {
+        scan: 'scan 2s cubic-bezier(0.4, 0, 0.2, 1) infinite',
+      }
     },
   },
   plugins: [],

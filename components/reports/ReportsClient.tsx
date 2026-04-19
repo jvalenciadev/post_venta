@@ -139,18 +139,35 @@ export default function ReportsClient() {
             <h1 className="text-4xl font-black text-white tracking-tighter uppercase italic leading-none">
               PANEL DE <span className="text-orange-500">MANDO</span>
             </h1>
-            <div className="flex items-center gap-4 mt-4">
+            <div className="flex flex-wrap items-center gap-4 mt-8">
               <button
                 onClick={exportToExcel}
-                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-green-500/10 border border-green-500/20 text-green-500 text-[8px] font-black uppercase tracking-widest hover:bg-green-500 hover:text-white transition-all shadow-lg shadow-green-500/5 group"
+                className="group relative flex items-center gap-4 px-6 py-4 rounded-[1.5rem] bg-black/40 border border-green-500/10 hover:border-green-500 text-green-500 hover:bg-green-500/10 hover:shadow-[0_0_40px_rgba(34,197,94,0.2)] transition-all duration-500 overflow-hidden"
               >
-                <FileSpreadsheet className="w-3 h-3 group-hover:scale-110 transition-transform" /> EXCEL
+                <div className="absolute inset-0 bg-gradient-to-r from-green-500/0 via-green-500/20 to-green-500/0 -translate-x-[100%] group-hover:animate-scan" />
+                <div className="flex flex-col items-start pr-4 border-r border-green-500/20 group-hover:border-green-500/50 transition-colors">
+                  <span className="text-[11px] font-black uppercase tracking-[0.2em] text-white">EXPORTAR</span>
+                  <span className="text-[8px] font-bold text-gray-500 uppercase tracking-widest mt-0.5">Dataset Raw</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <FileSpreadsheet className="w-6 h-6 group-hover:scale-110 group-hover:-rotate-3 transition-transform" />
+                  <span className="text-2xl font-black italic tracking-tighter">XLSX</span>
+                </div>
               </button>
+              
               <button
                 onClick={exportToPDF}
-                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-red-500/10 border border-red-500/20 text-red-500 text-[8px] font-black uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all shadow-lg shadow-red-500/5 group"
+                className="group relative flex items-center gap-4 px-6 py-4 rounded-[1.5rem] bg-black/40 border border-red-500/10 hover:border-red-500 text-red-500 hover:bg-red-500/10 hover:shadow-[0_0_40px_rgba(239,68,68,0.2)] transition-all duration-500 overflow-hidden"
               >
-                <FileText className="w-3 h-3 group-hover:scale-110 transition-transform" /> PDF
+                <div className="absolute inset-0 bg-gradient-to-r from-red-500/0 via-red-500/20 to-red-500/0 -translate-x-[100%] group-hover:animate-scan" />
+                <div className="flex flex-col items-start pr-4 border-r border-red-500/20 group-hover:border-red-500/50 transition-colors">
+                  <span className="text-[11px] font-black uppercase tracking-[0.2em] text-white">IMPRIMIR</span>
+                  <span className="text-[8px] font-bold text-gray-500 uppercase tracking-widest mt-0.5">Reporte VISUAL</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <FileText className="w-6 h-6 group-hover:scale-110 group-hover:rotate-3 transition-transform" />
+                  <span className="text-2xl font-black italic tracking-tighter">PDF</span>
+                </div>
               </button>
             </div>
           </div>
