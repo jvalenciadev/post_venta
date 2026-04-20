@@ -28,6 +28,11 @@ export default function Cart({ onOrderCreated }: { onOrderCreated: (id: string, 
   const [error, setError] = useState<string | null>(null)
 
   const subtotal = total()
+  const change = useMemo(() => {
+    const paid = parseFloat(amountPaid)
+    if (isNaN(paid)) return 0
+    return paid - subtotal
+  }, [amountPaid, subtotal])
 
 
 
@@ -72,6 +77,7 @@ export default function Cart({ onOrderCreated }: { onOrderCreated: (id: string, 
       setLoading(false)
       clearCart()
       setNotes('')
+      setAmountPaid('')
       alert('⚡ RESPALDO OFFLINE ACTIVADO ⚡\n\nSin internet: La orden ha sido guardada en la memoria local de esta caja. Asegúrate de presionar "SINCRONIZAR DATOS" en la consola superior cuando regrese la red.')
       if (modoDirecto) {
         // En modo directo sin internet (opcional, si se quiere imprimir offline, habría que adaptar, pero lo dejamos como queue por el scope actual)
@@ -97,6 +103,7 @@ export default function Cart({ onOrderCreated }: { onOrderCreated: (id: string, 
       } else if (result.orderId && result.orderNumber) {
         clearCart()
         setNotes('')
+        setAmountPaid('')
         if (modoDirecto) {
           await printTicketCopies(result.orderId)
         } else {
@@ -261,7 +268,6 @@ export default function Cart({ onOrderCreated }: { onOrderCreated: (id: string, 
           </div>
 
           <div className="space-y-1.5">
-
              <div className="bg-white/[0.02] rounded-xl border border-white/5 px-4 py-2 hover:bg-white/[0.04] transition-all">
                 <input 
                   type="text"
@@ -270,6 +276,27 @@ export default function Cart({ onOrderCreated }: { onOrderCreated: (id: string, 
                   placeholder="AÑADIR NOTA DE LA ORDEN..."
                   className="w-full bg-transparent border-none p-0 text-[12px] text-white focus:ring-0 placeholder:text-gray-700 font-black uppercase tracking-wider h-6"
                 />
+             </div>
+
+             <div className="grid grid-cols-2 gap-1.5">
+               <div className="bg-white/[0.02] rounded-xl border border-white/5 px-3 py-2 flex items-center justify-between group focus-within:border-orange-500/30 transition-all">
+                  <span className="text-[8px] font-black text-gray-500 uppercase tracking-widest leading-none">Abono</span>
+                  <input 
+                    type="number"
+                    step="0.1"
+                    min="0"
+                    value={amountPaid}
+                    onChange={(e) => setAmountPaid(e.target.value)}
+                    placeholder="0.00"
+                    className="w-16 bg-transparent border-none p-0 text-[12px] text-orange-500 text-right focus:ring-0 placeholder:text-gray-700 font-black placeholder:font-black"
+                  />
+               </div>
+               <div className="bg-white/[0.02] rounded-xl border border-white/5 px-3 py-2 flex flex-col items-end justify-center">
+                  <span className="text-[7px] font-black text-gray-500 uppercase tracking-widest leading-none">Su Cambio</span>
+                  <span className={`text-[12px] font-black tabular-nums leading-none mt-1 ${change >= 0 && amountPaid !== '' ? 'text-green-500' : 'text-gray-700'}`}>
+                    Bs. {change > 0 ? change.toFixed(2) : '0.00'}
+                  </span>
+               </div>
              </div>
           </div>
 
