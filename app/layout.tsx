@@ -4,6 +4,7 @@ import './globals.css'
 export const metadata: Metadata = {
   title: 'Mote y Chuño | Elite POS',
   description: 'Sistema de Punto de Venta Gastronómico - Mote y Chuño',
+  manifest: '/manifest.json',
 }
 
 import AuthListener from '@/components/auth/AuthListener'
