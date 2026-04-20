@@ -278,9 +278,9 @@ export default function Cart({ onOrderCreated }: { onOrderCreated: (id: string, 
                 />
              </div>
 
-             <div className="grid grid-cols-2 gap-1.5">
-               <div className="bg-white/[0.02] rounded-xl border border-white/5 px-3 py-2 flex items-center justify-between group focus-within:border-orange-500/30 transition-all">
-                  <span className="text-[8px] font-black text-gray-500 uppercase tracking-widest leading-none">Abono</span>
+             <div className="grid grid-cols-2 gap-2 mt-2">
+               <div className="bg-white/[0.03] rounded-2xl border border-white/10 px-4 py-3 flex items-center justify-between group focus-within:border-orange-500/50 transition-all shadow-inner">
+                  <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] leading-none">Abono</span>
                   <input 
                     type="number"
                     step="0.1"
@@ -288,12 +288,13 @@ export default function Cart({ onOrderCreated }: { onOrderCreated: (id: string, 
                     value={amountPaid}
                     onChange={(e) => setAmountPaid(e.target.value)}
                     placeholder="0.00"
-                    className="w-16 bg-transparent border-none p-0 text-[12px] text-orange-500 text-right focus:ring-0 placeholder:text-gray-700 font-black placeholder:font-black"
+                    className="w-24 bg-transparent border-none p-0 text-xl text-orange-500 text-right focus:ring-0 placeholder:text-gray-700 font-black tracking-tighter"
                   />
                </div>
-               <div className="bg-white/[0.02] rounded-xl border border-white/5 px-3 py-2 flex flex-col items-end justify-center">
-                  <span className="text-[7px] font-black text-gray-500 uppercase tracking-widest leading-none">Su Cambio</span>
-                  <span className={`text-[12px] font-black tabular-nums leading-none mt-1 ${change >= 0 && amountPaid !== '' ? 'text-green-500' : 'text-gray-700'}`}>
+               <div className="bg-gradient-to-br from-white/[0.02] to-black/40 rounded-2xl border border-white/5 px-4 py-3 flex flex-col items-end justify-center relative overflow-hidden">
+                  <div className={`absolute inset-0 bg-green-500/5 ${change > 0 ? 'opacity-100' : 'opacity-0'} transition-opacity`} />
+                  <span className="relative z-10 text-[9px] font-black text-gray-500 uppercase tracking-widest leading-none">Su Cambio</span>
+                  <span className={`relative z-10 text-xl font-black tabular-nums tracking-tighter leading-none mt-1.5 ${change >= 0 && amountPaid !== '' ? 'text-green-400' : 'text-gray-600'}`}>
                     Bs. {change > 0 ? change.toFixed(2) : '0.00'}
                   </span>
                </div>
