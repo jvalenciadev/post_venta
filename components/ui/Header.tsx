@@ -1,10 +1,57 @@
 'use client'
 
 import { usePathname } from 'next/navigation'
-import { Bell, Search, User } from 'lucide-react'
+import { Bell, Search, User, CloudOff, CloudUpload, Server, RefreshCw } from 'lucide-react'
+import { useSyncStore } from '@/lib/store/syncStore'
+import { useState, useEffect } from 'react'
+import { createOrder } from '@/lib/actions/orders'
+import { createExpense } from '@/lib/actions/expenses'
 
 export default function Header() {
   const pathname = usePathname()
+  const { actions, removeAction } = useSyncStore()
+  const [syncing, setSyncing] = useState(false)
+  const [isOffline, setIsOffline] = useState(false)
+
+  useEffect(() => {
+    const handleOnline = () => setIsOffline(false)
+    const handleOffline = () => setIsOffline(true)
+    setIsOffline(!navigator.onLine)
+    window.addEventListener('online', handleOnline)
+    window.addEventListener('offline', handleOffline)
+    return () => {
+      window.removeEventListener('online', handleOnline)
+      window.removeEventListener('offline', handleOffline)
+    }
+  }, [])
+
+  const handleSync = async () => {
+    if (!navigator.onLine) {
+      alert('Sigues sin conexión a internet. Reconéctate para iniciar sincronización principal.')
+      return
+    }
+    setSyncing(true)
+    let syncCount = 0
+    for (const action of actions) {
+      try {
+        if (action.type === 'order') {
+          const { items, paymentMethod, subtotal, notes, modoDirecto } = action.payload
+          await createOrder(items, paymentMethod, subtotal, notes, modoDirecto)
+        } else if (action.type === 'expense') {
+          await createExpense(action.payload)
+        }
+        removeAction(action.id)
+        syncCount++
+      } catch (e) {
+        console.error('Error sincronizando cola', action, e)
+      }
+    }
+    setSyncing(false)
+    if (syncCount > 0) {
+      alert(`¡✅ Sincronización Élite Completa!\n\nSe restablecieron ${syncCount} operaciones locales en la Nube Supabase.`)
+      window.location.reload()
+    }
+  }
   
   const getTitle = () => {
     if (pathname.includes('/dashboard')) return { main: 'Consola', sub: 'CENTRAL' }
@@ -39,6 +86,27 @@ export default function Header() {
         </div>
 
         <div className="flex items-center gap-3">
+           {actions.length > 0 && (
+             <button 
+               onClick={handleSync}
+               disabled={syncing}
+               className="relative flex items-center gap-2 px-4 h-12 rounded-2xl bg-orange-500 hover:bg-orange-600 transition-all text-white font-black italic tracking-widest uppercase shadow-[0_0_20px_rgba(249,115,22,0.3)] hover:shadow-[0_0_30px_rgba(249,115,22,0.6)]"
+             >
+               {syncing ? <RefreshCw className="w-5 h-5 animate-spin" /> : <Server className="w-5 h-5" />}
+               <span className="text-[10px]">Sync ({actions.length})</span>
+               <span className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 rounded-full border-2 border-[#050505] animate-pulse flex items-center justify-center text-[8px]">{actions.length}</span>
+             </button>
+           )}
+
+           {isOffline && (
+             <div className="flex items-center justify-center w-12 h-12 rounded-2xl bg-red-500/10 border border-red-500/30 text-red-500 group relative">
+               <CloudOff className="w-5 h-5 animate-pulse" />
+               <div className="absolute top-14 opacity-0 group-hover:opacity-100 bg-red-500 text-white text-[8px] font-black uppercase px-3 py-1.5 rounded-lg whitespace-nowrap transition-opacity pointer-events-none">
+                 Pérdida de Conexión
+               </div>
+             </div>
+           )}
+
            <button className="relative w-12 h-12 rounded-2xl bg-white/[0.02] border border-white/5 flex items-center justify-center text-gray-500 hover:text-orange-500 transition-all group">
              <Bell className="w-5 h-5 group-hover:scale-110 transition-transform" />
              <span className="absolute top-3 right-3 w-2 h-2 bg-orange-500 rounded-full border-2 border-[#050505] shadow-[0_0_10px_rgba(249,115,22,1)]"></span>

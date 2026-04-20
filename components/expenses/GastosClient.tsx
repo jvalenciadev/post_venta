@@ -18,6 +18,7 @@ import {
 } from 'lucide-react'
 import { createExpense, deleteExpense } from '@/lib/actions/expenses'
 import { Expense } from '@/types/database'
+import { useSyncStore } from '@/lib/store/syncStore'
 
 interface GastosClientProps {
   initialExpenses: Expense[]
@@ -45,17 +46,35 @@ export default function GastosClient({ initialExpenses, stats, totalGeneral, use
     e.preventDefault()
     if (!formData.concept || !formData.amount) return
 
-    startTransition(async () => {
-      const result = await createExpense({
+    const isOnline = typeof navigator !== 'undefined' && navigator.onLine
+
+    if (!isOnline) {
+      useSyncStore.getState().addAction('expense', {
         concept: formData.concept,
         amount: Number(formData.amount),
         person_name: formData.person_name,
         date: formData.date
-      } as any)
+      })
+      setFormData({ ...formData, concept: '', amount: '' })
+      alert('⚡ RESPALDO OFFLINE ACTIVADO ⚡\n\nEl Gasto se guardó en memoria local. Recuerda presionar "Sincronizar" cuando recuperes el internet.')
+      return
+    }
 
-      if (result.success) {
-        setFormData({ ...formData, concept: '', amount: '' })
-        window.location.reload() // Dynamic update for stats
+    startTransition(async () => {
+      try {
+        const result = await createExpense({
+          concept: formData.concept,
+          amount: Number(formData.amount),
+          person_name: formData.person_name,
+          date: formData.date
+        } as any)
+
+        if (result.success) {
+          setFormData({ ...formData, concept: '', amount: '' })
+          window.location.reload() // Dynamic update for stats
+        }
+      } catch (e: any) {
+        alert('Error de Red: Verifica tu conexión a internet.')
       }
     })
   }

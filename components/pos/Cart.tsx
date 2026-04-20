@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react'
 import { useCartStore } from '@/lib/store/cartStore'
 import { useUIStore } from '@/lib/store/uiStore'
+import { useSyncStore } from '@/lib/store/syncStore'
 import { createOrder } from '@/lib/actions/orders'
 import {
   ShoppingCart,
@@ -56,27 +57,55 @@ export default function Cart({ onOrderCreated }: { onOrderCreated: (id: string, 
     setError(null)
     setLoading(true)
 
-    const result = await createOrder(
-      items,
-      'cash',
-      subtotal,
-      notes ? `[${serviceType.toUpperCase()}] ${notes}` : `[${serviceType.toUpperCase()}]`,
-      modoDirecto
-    )
+    const fullNotes = notes ? `[${serviceType.toUpperCase()}] ${notes}` : `[${serviceType.toUpperCase()}]`
+    const isOnline = typeof navigator !== 'undefined' && navigator.onLine
 
-    setLoading(false)
-
-    if (result.error) {
-      setError(result.error)
-    } else if (result.orderId && result.orderNumber) {
+    if (!isOnline) {
+      useSyncStore.getState().addAction('order', {
+        items,
+        paymentMethod: 'cash',
+        subtotal,
+        notes: fullNotes,
+        modoDirecto
+      })
+      
+      setLoading(false)
       clearCart()
       setNotes('')
+      alert('⚡ RESPALDO OFFLINE ACTIVADO ⚡\n\nSin internet: La orden ha sido guardada en la memoria local de esta caja. Asegúrate de presionar "SINCRONIZAR DATOS" en la consola superior cuando regrese la red.')
       if (modoDirecto) {
-        // Auto-print 2 copies and skip modal
-        await printTicketCopies(result.orderId)
+        // En modo directo sin internet (opcional, si se quiere imprimir offline, habría que adaptar, pero lo dejamos como queue por el scope actual)
       } else {
-        onOrderCreated(result.orderId, result.orderNumber)
+        onOrderCreated('OFFLINE-QUEUE', 9999)
       }
+      return
+    }
+
+    try {
+      const result = await createOrder(
+        items,
+        'cash',
+        subtotal,
+        fullNotes,
+        modoDirecto
+      )
+
+      setLoading(false)
+
+      if (result.error) {
+        setError(result.error)
+      } else if (result.orderId && result.orderNumber) {
+        clearCart()
+        setNotes('')
+        if (modoDirecto) {
+          await printTicketCopies(result.orderId)
+        } else {
+          onOrderCreated(result.orderId, result.orderNumber)
+        }
+      }
+    } catch (err: any) {
+      setLoading(false)
+      setError('Fallo de Red. Verifica la conexión o contacta a soporte.')
     }
   }
 
