@@ -65,11 +65,13 @@ export default function Cart({ onOrderCreated }: { onOrderCreated: (id: string, 
     const fullNotes = notes ? `[${serviceType.toUpperCase()}] ${notes}` : `[${serviceType.toUpperCase()}]`
     const isOnline = typeof navigator !== 'undefined' && navigator.onLine
 
+    const parsedAmountPaid = amountPaid ? parseFloat(amountPaid) : subtotal
+
     if (!isOnline) {
       useSyncStore.getState().addAction('order', {
         items,
         paymentMethod: 'cash',
-        subtotal,
+        amountPaid: parsedAmountPaid,
         notes: fullNotes,
         modoDirecto
       })
@@ -91,7 +93,7 @@ export default function Cart({ onOrderCreated }: { onOrderCreated: (id: string, 
       const result = await createOrder(
         items,
         'cash',
-        subtotal,
+        parsedAmountPaid,
         fullNotes,
         modoDirecto
       )

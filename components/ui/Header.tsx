@@ -35,8 +35,8 @@ export default function Header() {
     for (const action of actions) {
       try {
         if (action.type === 'order') {
-          const { items, paymentMethod, subtotal, notes, modoDirecto } = action.payload
-          await createOrder(items, paymentMethod, subtotal, notes, modoDirecto)
+          const { items, paymentMethod, amountPaid, notes, modoDirecto } = action.payload
+          await createOrder(items, paymentMethod, amountPaid, notes, modoDirecto)
         } else if (action.type === 'expense') {
           await createExpense(action.payload)
         }
